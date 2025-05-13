@@ -138,10 +138,13 @@ namespace SeleniumAutotest
                 {
                     GenerateParameters();
                 }
+
+                string driverPath = TryToDownloadDriver();
+                var service = ChromeDriverService.CreateDefaultService(driverPath);
+                service.HideCommandPromptWindow = true;
                 ChromeOptions options = new ChromeOptions();
                 options.AddArguments("--disable-notifications");
-                string driverPath = TryToDownloadDriver();
-                IWebDriver driver = new ChromeDriver(driverPath, options);
+                IWebDriver driver = new ChromeDriver(service, options);
                 driver.Manage().Window.Maximize();
                 try
                 {
@@ -229,10 +232,13 @@ namespace SeleniumAutotest
             {
                 GenerateParameters();
             }
+
+            string driverPath = TryToDownloadDriver();
+            var service = ChromeDriverService.CreateDefaultService(driverPath);
+            service.HideCommandPromptWindow = true;
             ChromeOptions options = new ChromeOptions();
             options.AddArguments("--disable-notifications");
-            string driverPath = TryToDownloadDriver();
-            WebDriver = new ChromeDriver(driverPath, options);
+            IWebDriver driver = new ChromeDriver(service, options);
             WebDriver.Manage().Window.Maximize();
             foreach (var substep in Root.Substeps)
             {

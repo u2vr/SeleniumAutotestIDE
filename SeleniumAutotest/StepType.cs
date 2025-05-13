@@ -11,7 +11,8 @@ namespace SeleniumAutotest
         Group, Open, FindElement, Click, CheckText, EnterText, CheckElement, 
         WaitTime, CheckClassExists, DoubleClick, CheckAttribute, ReadAttributeToParameter, 
         ReadTextToParameter, CheckClassNotExists, ReadAddressToParameter, CompareParameters, 
-        JsClick, AltClick, JsEvent, SetAttribute, InputToParameterByUser, RefreshPage, ScrollTo, ScrollByPixels, JsCode, GroupOneOfSubsteps, ClearValue
+        JsClick, AltClick, JsEvent, SetAttribute, InputToParameterByUser, RefreshPage, ScrollTo, ScrollByPixels, JsCode, GroupOneOfSubsteps, ClearValue,
+        MouseMoveToEl
         // Add new to tail
         // Find NEWSTEP for showing where need to add stepTypes (1 in Form1, 2 in TestStep, 2+this here)
     }
@@ -48,9 +49,9 @@ namespace SeleniumAutotest
                 Types = new List<StepTypes>(){ StepTypes.FindElement } },
             new StepTypesGroup(){
                 ImageIndex = 2,
-                Name = "Кликнуть",
+                Name = "Мышь",
                 Parents = new List<StepTypes?>(){ StepTypes.FindElement },
-                Types = new List<StepTypes>(){ StepTypes.Click, StepTypes.AltClick, StepTypes.JsClick, StepTypes.DoubleClick } },
+                Types = new List<StepTypes>(){ StepTypes.Click, StepTypes.AltClick, StepTypes.JsClick, StepTypes.DoubleClick, StepTypes.MouseMoveToEl } },
             new StepTypesGroup(){
                 ImageIndex = 3,
                 Name = "Изменить",
@@ -115,10 +116,11 @@ namespace SeleniumAutotest
             { StepTypes.Open, "Открыть сайт" },
             { StepTypes.RefreshPage, "Обновить страницу" },
 
-            { StepTypes.Click, "Просто" },
-            { StepTypes.AltClick, "Альтернативно" },
-            { StepTypes.JsClick, "Через JS" },
-            { StepTypes.DoubleClick, "Двойной" },
+            { StepTypes.Click, "Клик" },
+            { StepTypes.AltClick, "Альтернативный клик" },
+            { StepTypes.JsClick, "Клик через JS" },
+            { StepTypes.DoubleClick, "Двойной клик" },
+            { StepTypes.MouseMoveToEl, "Передвинуть на элемент" },
 
             { StepTypes.CheckText, "Текст" },
             { StepTypes.CheckAttribute, "Атрибут" },

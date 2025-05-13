@@ -20,7 +20,7 @@ namespace SeleniumAutotest
 
         // translate
         // refactoring
-        private const string Version = "v1.9.1";
+        private const string Version = "v1.10.0";
         private const string AppName = "Selenium Autotest IDE " + Version;
 
         private Project Project { get; set; }
@@ -268,6 +268,7 @@ namespace SeleniumAutotest
                 case StepTypes.AltClick:
                 case StepTypes.JsClick:
                 case StepTypes.DoubleClick:
+                case StepTypes.MouseMoveToEl:
                 case StepTypes.ScrollTo:
                 case StepTypes.ClearValue:
                     break;

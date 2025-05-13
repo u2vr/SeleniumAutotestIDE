@@ -91,6 +91,7 @@ namespace SeleniumAutotest
                 case StepTypes.JsClick:
                 case StepTypes.AltClick:
                 case StepTypes.DoubleClick:
+                case StepTypes.MouseMoveToEl:
                     str = $"{Name}";
                     break;
                 case StepTypes.Group:
@@ -185,6 +186,7 @@ namespace SeleniumAutotest
                 {
                     cancellationToken = new CancellationToken();
                 }
+                bool isParented = false;
                 try
                 {
                     if (!Enabled || this.StepState == StepStates.Skipped)
@@ -198,6 +200,7 @@ namespace SeleniumAutotest
 
                     if (this.Selector == null) { this.Selector = ""; }
                     if (this.Value == null) { this.Value = ""; }
+
 
                     bool needToSlow = false;
                     Log = "";
@@ -218,6 +221,7 @@ namespace SeleniumAutotest
                                 IWebElement el = null;
                                 if (this.Parent.FoundElement != null && !IgnoreParent)
                                 {
+                                    isParented = true;
                                     IReadOnlyCollection<IWebElement> tempElementsBySelector = null;
                                     switch (SelectorType)
                                     {
@@ -284,6 +288,7 @@ namespace SeleniumAutotest
                                 IWebElement el = null;
                                 if (this.Parent.FoundElement != null && !IgnoreParent)
                                 {
+                                    isParented = true;
                                     IReadOnlyCollection<IWebElement> tempElementsBySelector = null;
                                     switch (SelectorType)
                                     {
@@ -337,6 +342,7 @@ namespace SeleniumAutotest
                             break;
                         case StepTypes.EnterText:
                             {
+                                isParented = true;
                                 needToSlow = true;
                                 string value = ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
                                 var el = this.Parent.FoundElement;
@@ -347,6 +353,7 @@ namespace SeleniumAutotest
                             break;
                         case StepTypes.SetAttribute:
                             {
+                                isParented = true;
                                 needToSlow = true;
                                 string value = ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
                                 var el = this.Parent.FoundElement;
@@ -356,6 +363,7 @@ namespace SeleniumAutotest
                             break;
                         case StepTypes.ClearValue:
                             {
+                                isParented = true;
                                 needToSlow = true;
                                 string value = ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
                                 var el = this.Parent.FoundElement;
@@ -364,6 +372,7 @@ namespace SeleniumAutotest
                             break;
                         case StepTypes.Click:
                             {
+                                isParented = true;
                                 needToSlow = true;
                                 var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
                                 var el = wait.Until(ExpectedConditions.ElementToBeClickable(this.Parent.FoundElement));
@@ -372,6 +381,7 @@ namespace SeleniumAutotest
                             break;
                         case StepTypes.JsClick:
                             {
+                                isParented = true;
                                 needToSlow = true;
                                 var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
                                 var el = wait.Until(ExpectedConditions.ElementToBeClickable(this.Parent.FoundElement));
@@ -380,6 +390,7 @@ namespace SeleniumAutotest
                             break;
                         case StepTypes.AltClick:
                             {
+                                isParented = true;
                                 needToSlow = true;
                                 var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
                                 var el = wait.Until(ExpectedConditions.ElementToBeClickable(this.Parent.FoundElement));
@@ -389,6 +400,7 @@ namespace SeleniumAutotest
                             break;
                         case StepTypes.DoubleClick:
                             {
+                                isParented = true;
                                 needToSlow = true;
                                 var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
                                 var el = wait.Until(ExpectedConditions.ElementToBeClickable(this.Parent.FoundElement));
@@ -396,8 +408,19 @@ namespace SeleniumAutotest
                                 action.DoubleClick(el).Build().Perform();
                             }
                             break;
+                        case StepTypes.MouseMoveToEl:
+                            {
+                                isParented = true;
+                                needToSlow = true;
+                                var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
+                                wait.Until(ExpectedConditions.ElementToBeSelected(this.Parent.FoundElement));
+                                Actions action = new Actions(driver);
+                                action.MoveToElement(this.Parent.FoundElement).Build().Perform();
+                            }
+                            break;
                         case StepTypes.JsEvent:
                             {
+                                isParented = true;
                                 needToSlow = true;
                                 var el = this.Parent.FoundElement;
                                 IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
@@ -406,6 +429,7 @@ namespace SeleniumAutotest
                             break;
                         case StepTypes.CheckText:
                             {
+                                isParented = true;
                                 var el = this.Parent.FoundElement;
                                 var text = el.Text.Replace("\r", "").Replace("\n", "").Trim();
                                 if (!IsMatchMask(text, ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)))
@@ -417,6 +441,7 @@ namespace SeleniumAutotest
                             break;
                         case StepTypes.CheckAttribute:
                             {
+                                isParented = true;
                                 var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
                                 var el = this.Parent.FoundElement;
                                 if (el.GetAttribute(selector) == null)
@@ -433,6 +458,7 @@ namespace SeleniumAutotest
                             break;
                         case StepTypes.CheckClassExists:
                             {
+                                isParented = true;
                                 if (!this.Parent.FoundElement.GetAttribute("class").Contains(ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)))
                                 {
                                     throw new Exception($"Класс [{ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)}] не найден в элементе");
@@ -441,6 +467,7 @@ namespace SeleniumAutotest
                             break;
                         case StepTypes.CheckClassNotExists:
                             {
+                                isParented = true;
                                 if (this.Parent.FoundElement.GetAttribute("class").Contains(ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)))
                                 {
                                     throw new Exception($"Класс [{ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)}] не найден в элементе");
@@ -454,6 +481,7 @@ namespace SeleniumAutotest
                             break;
                         case StepTypes.ReadAttributeToParameter:
                             {
+                                isParented = true;
                                 var el = this.Parent.FoundElement;
                                 var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
                                 var value = el.GetAttribute(selector) ?? "";
@@ -463,6 +491,7 @@ namespace SeleniumAutotest
                             break;
                         case StepTypes.ReadTextToParameter:
                             {
+                                isParented = true;
                                 var el = this.Parent.FoundElement;
                                 var value = el.Text;
                                 SetParameter(value, this.Parameter);
@@ -515,6 +544,7 @@ namespace SeleniumAutotest
                             break;
                         case StepTypes.ScrollTo:
                             {
+                                isParented = true;
                                 var el = this.Parent.FoundElement; 
                                 IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
                                 js.ExecuteScript("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", el);
@@ -570,32 +600,55 @@ namespace SeleniumAutotest
                     }
                     else
                     {
-                        var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
-                        this.Log = $"Элемент {SelectorType}=\"{selector}\" невалиден по неизвестной причине после 10 секунд ожидания \r\n\r\n" + ex.ToString();
+
+                        var selector = "-";
+                        if (isParented)
+                            selector = ValuesFromParameters.ProcessInput(this.Parent.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                        else
+                            selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+
+                        this.Log = $"Элемент {SelectorType}=\"{selector}\" невалиден по неизвестной причине после 10 секунд ожидания (попробуйте перенайти элемент ещё раз перед вызовом этого действия) \r\n\r\n" + ex.ToString();
                         throw;
                     }
                 }
                 catch (NoSuchElementException ex)
                 {
-                    var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                    var selector = "-";
+                    if (isParented)
+                        selector = ValuesFromParameters.ProcessInput(this.Parent.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                    else
+                        selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
                     this.Log = $"Элемент {SelectorType}=\"{selector}\" не найден\r\n\r\n" + ex.ToString();
                     throw;
                 }
                 catch (InvalidSelectorException ex)
                 {
-                    var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                    var selector = "-";
+                    if (isParented)
+                        selector = ValuesFromParameters.ProcessInput(this.Parent.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                    else
+                        selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
                     this.Log = $"Селектор имеет ошибку {SelectorType}=\"{selector}\"\r\n\r\n" + ex.ToString();
                     throw;
                 }
                 catch (WebDriverTimeoutException ex)
                 {
-                    var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                    var selector = "-";
+                    if (isParented)
+                        selector = ValuesFromParameters.ProcessInput(this.Parent.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                    else
+                        selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
                     this.Log = $"Элемент {SelectorType}=\"{selector}\" не найден за отведённое время\r\n\r\n" + ex.ToString();
                     throw;
                 }
                 catch (Exception ex)
                 {
-                    this.Log = ex.ToString();
+                    var selector = "-";
+                    if (isParented)
+                        selector = ValuesFromParameters.ProcessInput(this.Parent.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                    else
+                        selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                    this.Log = $"Неизвестная ошибка! {SelectorType}=\"{selector}\"\r\n\r\n" + ex.ToString();
                     throw;
                 }
             }
