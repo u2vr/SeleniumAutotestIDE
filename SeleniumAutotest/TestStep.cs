@@ -201,17 +201,74 @@ namespace SeleniumAutotest
                     if (this.Selector == null) { this.Selector = ""; }
                     if (this.Value == null) { this.Value = ""; }
 
-
                     bool needToSlow = false;
                     Log = "";
                     switch (Type)
                     {
                         // NEWSTEP add action for new step
                         case StepTypes.Open:
-                            driver.Navigate().GoToUrl(ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters));
+                            var url = ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                            if (driver.Url == url)
+                                driver.Navigate().Refresh();
+                            else
+                                driver.Navigate().GoToUrl(url);
+                            if (selectFoundElements)
+                            {
+                                string js = @"
+                                    (function() {
+                                        if (document.getElementById('mouse-tracker')) return;
+
+                                        let dot = document.createElement('div');
+                                        dot.id = 'mouse-tracker';
+                                        dot.style.position = 'fixed';
+                                        dot.style.width = '20px';
+                                        dot.style.height = '20px';
+                                        dot.style.backgroundColor = 'red';
+                                        dot.style.borderRadius = '50%';
+                                        dot.style.pointerEvents = 'none';
+                                        dot.style.zIndex = '999999';
+                                        dot.style.opacity = '0.6';
+                                        document.body.appendChild(dot);
+
+                                        document.addEventListener('mousemove', function(e) {
+                                            dot.style.left = (e.clientX - 10) + 'px';
+                                            dot.style.top = (e.clientY - 10) + 'px';
+                                        });
+                                    })();
+                                    ";
+
+                                ((IJavaScriptExecutor)driver).ExecuteScript(js);
+                            }
                             break;
                         case StepTypes.RefreshPage:
                             driver.Navigate().Refresh();
+                            if (selectFoundElements)
+                            {
+                                string js = @"
+                                    (function() {
+                                        if (document.getElementById('mouse-tracker')) return;
+
+                                        let dot = document.createElement('div');
+                                        dot.id = 'mouse-tracker';
+                                        dot.style.position = 'fixed';
+                                        dot.style.width = '20px';
+                                        dot.style.height = '20px';
+                                        dot.style.backgroundColor = 'red';
+                                        dot.style.borderRadius = '50%';
+                                        dot.style.pointerEvents = 'none';
+                                        dot.style.zIndex = '999999';
+                                        dot.style.opacity = '0.6';
+                                        document.body.appendChild(dot);
+
+                                        document.addEventListener('mousemove', function(e) {
+                                            dot.style.left = (e.clientX - 10) + 'px';
+                                            dot.style.top = (e.clientY - 10) + 'px';
+                                        });
+                                    })();
+                                    ";
+
+                                ((IJavaScriptExecutor)driver).ExecuteScript(js);
+                            }
                             break;
                         case StepTypes.FindElement:
                             {
@@ -412,8 +469,6 @@ namespace SeleniumAutotest
                             {
                                 isParented = true;
                                 needToSlow = true;
-                                var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
-                                wait.Until(ExpectedConditions.ElementToBeSelected(this.Parent.FoundElement));
                                 Actions action = new Actions(driver);
                                 action.MoveToElement(this.Parent.FoundElement).Build().Perform();
                             }
