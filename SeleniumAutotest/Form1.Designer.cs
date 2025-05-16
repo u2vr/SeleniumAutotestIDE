@@ -145,6 +145,7 @@
             this.SpRight = new System.Windows.Forms.Splitter();
             this.PaLeft = new System.Windows.Forms.Panel();
             this.SpLeft = new System.Windows.Forms.Splitter();
+            this.BuBoosty = new System.Windows.Forms.ToolStripMenuItem();
             this.MeMain.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NuSlowModeMs)).BeginInit();
@@ -230,7 +231,8 @@
             this.BuXpathHelp,
             this.BuAbout,
             this.BuGithub,
-            this.BuDonate});
+            this.BuDonate,
+            this.BuBoosty});
             this.инфоToolStripMenuItem.Name = "инфоToolStripMenuItem";
             this.инфоToolStripMenuItem.Size = new System.Drawing.Size(51, 20);
             this.инфоToolStripMenuItem.Text = "Инфо";
@@ -1665,6 +1667,13 @@
             this.SpLeft.TabIndex = 23;
             this.SpLeft.TabStop = false;
             // 
+            // BuBoosty
+            // 
+            this.BuBoosty.Name = "BuBoosty";
+            this.BuBoosty.Size = new System.Drawing.Size(208, 22);
+            this.BuBoosty.Text = "Boosty";
+            this.BuBoosty.Click += new System.EventHandler(this.BuBoosty_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1837,6 +1846,7 @@
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemError;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemIgnoredError;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemSkipped;
+        private System.Windows.Forms.ToolStripMenuItem BuBoosty;
     }
 }
 

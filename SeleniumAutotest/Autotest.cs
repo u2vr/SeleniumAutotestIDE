@@ -238,7 +238,7 @@ namespace SeleniumAutotest
             service.HideCommandPromptWindow = true;
             ChromeOptions options = new ChromeOptions();
             options.AddArguments("--disable-notifications");
-            IWebDriver driver = new ChromeDriver(service, options);
+            WebDriver = new ChromeDriver(service, options);
             WebDriver.Manage().Window.Maximize();
             foreach (var substep in Root.Substeps)
             {

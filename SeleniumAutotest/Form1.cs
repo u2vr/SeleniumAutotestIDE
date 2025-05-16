@@ -16,11 +16,10 @@ namespace SeleniumAutotest
     public partial class Form1 : Form
     {
         // TODO:
-        // Add random start to step-by-step tests
+        // Add selected start to step-by-step tests
 
         // translate
-        // refactoring
-        private const string Version = "v1.10.1";
+        private const string Version = "v1.10.3";
         private const string AppName = "Selenium Autotest IDE " + Version;
 
         private Project Project { get; set; }
@@ -1108,8 +1107,9 @@ namespace SeleniumAutotest
 
         private void BuAbout_Click(object sender, EventArgs e)
         {
-            string msg = "Автор: Трофимов Александр (alextrof94)\r\n";
-            msg += "Программа распространяется бесплатно\r\n\r\n";
+            string msg = "Автор: Трофимов Александр (aka alextrof94 aka u2vr)\r\n";
+            msg += "Программа распространяется бесплатно\r\n";
+            msg += "Version: " + Version + "\r\n\r\n";
             msg += "Изображения взяты с сайта https://icons8.com";
             MessageBox.Show(msg, "О программе");
         }
@@ -1127,7 +1127,18 @@ namespace SeleniumAutotest
 
         private void BuDonate_Click(object sender, EventArgs e)
         {
-            string args = "/c start \"\" \"https://boosty.to/goodvrgames/donate\"";
+            string args = "/c start \"\" \"https://www.donationalerts.com/r/u2vr\"";
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "cmd",
+                Arguments = args,
+                UseShellExecute = true
+            });
+        }
+
+        private void BuBoosty_Click(object sender, EventArgs e)
+        {
+            string args = "/c start \"\" \"https://boosty.to/goodvrgames\"";
             Process.Start(new ProcessStartInfo
             {
                 FileName = "cmd",
